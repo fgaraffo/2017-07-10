@@ -6,6 +6,8 @@ package it.polito.tdp.artsmia;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.artsmia.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -39,14 +41,37 @@ public class ArtsmiaController {
 	@FXML // fx:id="txtResult"
 	private TextArea txtResult; // Value injected by FXMLLoader
 
+	private Model model;
+
 	@FXML
 	void doAnalizzaOggetti(ActionEvent event) {
-		txtResult.setText("doAnalizzaOggetti");
+		model.creaGrafo();
+		txtResult.setText(String.format("Grafo creato: %d vertici, %s archi\n", model.getGraphNumVertices(),
+				model.getGraphNumEdges()));
 	}
 
 	@FXML
 	void doCalcolaComponenteConnessa(ActionEvent event) {
-		txtResult.setText("doCalcolaComponenteConnessa");
+
+		String idObjStr = txtObjectId.getText();
+
+		int idObj;
+		try {
+			idObj = Integer.parseInt(idObjStr);
+		} catch (NumberFormatException e) {
+			txtResult.appendText("Inserire un numero intero valido\n");
+			return;
+		}
+
+		if (!model.isObjIdValid(idObj)) {
+			txtResult.appendText(String.format("Non esiste alcun oggetto con id=%d\n", idObj));
+			return ;
+		}
+		
+		int dimCC = model.calcolaDimensioneCC(idObj) ;
+		
+		txtResult.appendText(String.format("La componente connessa che contiene il vertice %d ha %d vertici\n", idObj, dimCC));
+
 	}
 
 	@FXML
@@ -63,5 +88,9 @@ public class ArtsmiaController {
 		assert txtObjectId != null : "fx:id=\"txtObjectId\" was not injected: check your FXML file 'Artsmia.fxml'.";
 		assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Artsmia.fxml'.";
 
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
 	}
 }
