@@ -9,14 +9,15 @@ public class TestModel {
 		
 		m.creaGrafo();
 		
+		/*
 		List <ArtObject> list = m.getArtObjects();
 		for (ArtObject ao : list)
 		{
 			int dimCC = m.calcolaDimensioneCC(ao.getId());
 			System.out.format("Vertice %d, dimensione %d\n", ao.getId(), dimCC);
 		}
-		
-		
+		*/
+		List <ArtObject> best= m.camminoMassimo (4318, 4);
 	}
 
 }

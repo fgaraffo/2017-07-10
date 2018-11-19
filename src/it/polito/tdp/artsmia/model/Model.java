@@ -1,5 +1,6 @@
 package it.polito.tdp.artsmia.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,15 +16,10 @@ import it.polito.tdp.artsmia.db.ArtsmiaDAO;
 public class Model {
 
 	private List <ArtObject> artObjects;
-	
-	public List<ArtObject> getArtObjects() {
-		return artObjects;
-	}
-
-
 	private Graph <ArtObject, DefaultWeightedEdge> graph;
+	List <ArtObject> best = null;
 	
-	
+		
 	/**
 	 * Popola la lista artobjects (leggendo dal DB) e crea il grafo.
 	 */
@@ -112,17 +108,7 @@ public class Model {
 
 	public int calcolaDimensioneCC(int idObj) {
 		// Trova il vertice di partenza
-		ArtObject start = null;
-		for (ArtObject ao : this.artObjects)
-		{
-			if (ao.getId()==idObj)
-			{
-				start = ao;
-				break;
-			}
-		}
-		if (start==null)
-			throw new IllegalArgumentException("Vertice "+idObj+" non esistente.");
+		ArtObject start = trovaVertice(idObj);
 
 		// Visita il grafo
 		Set <ArtObject> visitati = new HashSet<>();
@@ -135,4 +121,79 @@ public class Model {
 		return visitati.size();
 	}
 	
+	public List<ArtObject> getArtObjects() {
+		return artObjects;
+	}
+	
+	public List <ArtObject> camminoMassimo (int startId, int LUN)
+	{
+		// Trova il vertice di partenza
+		ArtObject start = trovaVertice(startId);
+		
+		List <ArtObject> parziale = new ArrayList<>();
+		parziale.add(start);
+		best = parziale;
+		
+		cerca(parziale, 1, LUN);
+		
+		return best;
+	}
+	
+	// Soluzione punto 2
+	public void cerca (List <ArtObject> parziale, int livello, int LUN)
+	{
+		if (livello==LUN) {
+			// Caso terminale
+			if (peso(parziale)>peso(best))
+			{
+				best = new ArrayList<>(parziale);
+				System.out.println(parziale);
+			}
+			return;
+		}
+			
+		// Trova i vertici adiacenti all'ultimo
+		ArtObject ultimo = parziale.get(parziale.size()-1);
+		List <ArtObject> adiacenti = Graphs.neighborListOf(this.graph, ultimo);
+		
+		for (ArtObject prova : adiacenti)
+		{
+			if (!parziale.contains(prova) && 
+				prova.getClassification().equals(parziale.get(0).getClassification()))
+			{
+				parziale.add(prova);
+				cerca(parziale, livello+1, LUN);
+				parziale.remove(parziale.size()-1);
+			}
+		}
+		
+	}
+
+
+	private int peso(List<ArtObject> parziale) {
+		int peso = 0;
+		for (int i=0;i<parziale.size()-1;i++)
+		{
+			DefaultWeightedEdge e = graph.getEdge(parziale.get(i), parziale.get(i+1));
+			int pesoarco = (int) graph.getEdgeWeight(e);
+			peso+=pesoarco;
+		}
+		return peso;
+	}
+	
+	private ArtObject trovaVertice (int idObj)
+	{
+		ArtObject start = null;
+		for (ArtObject ao : this.artObjects)
+		{
+			if (ao.getId()==idObj)
+			{
+				start = ao;
+				break;
+			}
+		}
+		if (start==null)
+			throw new IllegalArgumentException("Vertice "+idObj+" non esistente.");
+		return start;
+	}
 }
