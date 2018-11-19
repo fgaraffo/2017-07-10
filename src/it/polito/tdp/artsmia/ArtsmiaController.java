@@ -6,6 +6,8 @@ package it.polito.tdp.artsmia;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.artsmia.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,6 +17,8 @@ import javafx.scene.control.TextField;
 
 public class ArtsmiaController {
 
+	private Model model;
+	
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
 
@@ -41,7 +45,9 @@ public class ArtsmiaController {
 
 	@FXML
 	void doAnalizzaOggetti(ActionEvent event) {
-		txtResult.setText("doAnalizzaOggetti");
+		model.creaGrafo();
+		txtResult.setText(String.format("Grafo creato: %d vertici, %s archi\n", model.getGraphNumVertices(),
+				model.getGraphNumEdges()));
 	}
 
 	@FXML
