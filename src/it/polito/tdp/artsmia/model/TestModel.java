@@ -18,6 +18,8 @@ public class TestModel {
 		}
 		*/
 		List <ArtObject> best= m.camminoMassimo (4318, 4);
+		
+		System.out.println(best);
 	}
 
 }

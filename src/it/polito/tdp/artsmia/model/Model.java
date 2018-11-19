@@ -158,7 +158,7 @@ public class Model {
 		
 		for (ArtObject prova : adiacenti)
 		{
-			if (!parziale.contains(prova) && 
+			if (!parziale.contains(prova) && prova.getClassification() != null &&
 				prova.getClassification().equals(parziale.get(0).getClassification()))
 			{
 				parziale.add(prova);
