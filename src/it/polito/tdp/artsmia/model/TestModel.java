@@ -17,7 +17,7 @@ public class TestModel {
 			System.out.format("Vertice %d, dimensione %d\n", ao.getId(), dimCC);
 		}
 		*/
-		List <ArtObject> best= m.camminoMassimo (4318, 4);
+		List <ArtObject> best= m.camminoMassimo (5342,3);
 		
 		System.out.println(best);
 	}
