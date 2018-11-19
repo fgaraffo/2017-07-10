@@ -77,6 +77,17 @@ public class Model {
 		
 		return comuni;
 	}
-	
+
+
+	public Object getGraphNumVertices() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public Object getGraphNumEdges() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
