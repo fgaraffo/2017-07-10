@@ -1,17 +1,26 @@
 package it.polito.tdp.artsmia.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 import it.polito.tdp.artsmia.db.ArtsmiaDAO;
 
 public class Model {
 
 	private List <ArtObject> artObjects;
+	
+	public List<ArtObject> getArtObjects() {
+		return artObjects;
+	}
+
+
 	private Graph <ArtObject, DefaultWeightedEdge> graph;
 	
 	
@@ -43,7 +52,6 @@ public class Model {
 			{
 				ArtObject dest = new ArtObject(c.getArtObjectId(), null, null, null, 0, null, null, null, null, null, 0, null, null, null, null, null);
 				Graphs.addEdge(this.graph, ao, dest, c.getCount());
-				System.out.format("(%d, %d) peso %d\n",ao.getId(),dest.getId(), c.getCount());
 			}
 		}
 	
@@ -79,15 +87,52 @@ public class Model {
 	}
 
 
-	public Object getGraphNumVertices() {
-		// TODO Auto-generated method stub
-		return null;
+	public int getGraphNumEdges() {
+		return this.graph.edgeSet().size();
+	}
+
+	public int getGraphNumVertices() {
+		return this.graph.vertexSet().size();
 	}
 
 
-	public Object getGraphNumEdges() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean isObjIdValid(int idObj) {
+		
+		if (this.artObjects==null)
+			throw new NullPointerException("Prima crea il grafo");
+		
+		for (ArtObject ao : artObjects)
+		{
+			if (ao.getId()==idObj)
+				return true;
+		}
+		return false;
+	}
+
+
+	public int calcolaDimensioneCC(int idObj) {
+		// Trova il vertice di partenza
+		ArtObject start = null;
+		for (ArtObject ao : this.artObjects)
+		{
+			if (ao.getId()==idObj)
+			{
+				start = ao;
+				break;
+			}
+		}
+		if (start==null)
+			throw new IllegalArgumentException("Vertice "+idObj+" non esistente.");
+
+		// Visita il grafo
+		Set <ArtObject> visitati = new HashSet<>();
+		DepthFirstIterator<ArtObject, DefaultWeightedEdge> dfv = new DepthFirstIterator<>(this.graph, start);
+		while (dfv.hasNext())
+		{
+			visitati.add(dfv.next());
+		}
+		// Conta gli elementi
+		return visitati.size();
 	}
 	
 }
