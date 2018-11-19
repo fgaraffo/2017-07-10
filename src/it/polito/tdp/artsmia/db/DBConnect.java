@@ -9,7 +9,7 @@ import com.mchange.v2.c3p0.DataSources;
 
 public class DBConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/artsmia?user=root";
+	private static String jdbcURL = "jdbc:mysql://localhost/artsmia?user=root&password=fede";
 
 	private static DataSource ds;
 
